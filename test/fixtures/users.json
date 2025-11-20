@@ -1,0 +1,60 @@
+{
+  "validUsers": [
+    {
+      "name": "João Silva",
+      "email": "joao.silva@test.com",
+      "cpf": "12345678901",
+      "password": "Senha123",
+      "profile": "profissional_qa"
+    },
+    {
+      "name": "Maria Santos",
+      "email": "maria.santos@test.com",
+      "cpf": "98765432109",
+      "password": "Senha456",
+      "profile": "estudante"
+    },
+    {
+      "name": "Pedro Oliveira",
+      "email": "pedro.oliveira@test.com",
+      "cpf": "11122233344",
+      "password": "Senha789",
+      "profile": "gestor"
+    },
+    {
+      "name": "Admin Sistema",
+      "email": "admin@test.com",
+      "cpf": "99988877766",
+      "password": "Admin123",
+      "profile": "administrador"
+    }
+  ],
+  "invalidUsers": {
+    "missingFields": {
+      "name": "Usuário Incompleto",
+      "email": "incompleto@test.com"
+    },
+    "invalidEmail": {
+      "name": "Email Inválido",
+      "email": "email-invalido",
+      "cpf": "55544433322",
+      "password": "Senha123",
+      "profile": "profissional_qa"
+    },
+    "invalidPassword": {
+      "name": "Senha Fraca",
+      "email": "senha.fraca@test.com",
+      "cpf": "66677788899",
+      "password": "123",
+      "profile": "profissional_qa"
+    },
+    "invalidProfile": {
+      "name": "Perfil Inválido",
+      "email": "perfil.invalido@test.com",
+      "cpf": "77788899900",
+      "password": "Senha123",
+      "profile": "perfil_inexistente"
+    }
+  }
+}
+

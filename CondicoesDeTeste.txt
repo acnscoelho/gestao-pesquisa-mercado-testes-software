@@ -1,0 +1,38 @@
+JIRA-9165: Registro de Usuário por Perfil
+
+ID	Condição	Resultado Esperado	Camada
+1	
+Verificar o comportamento do sistema ao realizar o registro de um novo usuário por perfil
+	O sistema deve permitir o registro de novos usuários com perfis válidos e retornar confirmação de criação com sucesso	API
+2	Avaliar a validação de unicidade dos dados de cadastro (e-mail, CPF)	O sistema deve impedir registros duplicados e informar ao usuário que os dados já estão cadastrados	API
+3	Validar o cumprimento das regras de obrigatoriedade e formato dos campos de registro	O sistema deve validar formatos e campos obrigatórios, apresentando mensagens de erro adequadas quando inválidos	API
+4	Avaliar a aplicação de políticas de segurança no cadastro de usuário (senhas, perfis permitidos)	O sistema deve rejeitar senhas que não atendem à política e impedir seleção de perfis não permitidos	API
+5	Garantir o armazenamento adequado de metadados do registro (data, hora, perfil)	O sistema deve armazenar corretamente as informações complementares associadas ao registro do usuário	API
+
+JIRA-9167: Login por Perfil
+
+ID	Condição	Resultado Esperado	Camada
+1	Verificar a autenticação de usuários com base em credenciais válidas e inválidas	O sistema deve autenticar usuários válidos e rejeitar tentativas inválidas com mensagem adequada	API
+2	Avaliar o comportamento do sistema após tentativas de login incorretas sucessivas	O sistema deve bloquear temporariamente o login após exceder o limite de tentativas incorretas	API
+3	Validar a geração, validade e conteúdo do token de autenticação	O sistema deve gerar um token JWT válido contendo informações do perfil e prazo de expiração	API
+4	Confirmar a obrigatoriedade e uso do token para acessar rotas protegidas	O sistema deve negar acesso a rotas protegidas sem token ou com token inválido/expirado	API
+5	Verificar o controle de acesso e restrição de funcionalidades por perfil de usuário	O sistema deve permitir apenas o acesso às funcionalidades compatíveis com o perfil autenticado	API
+
+JIRA-9169: Registrar Informações da Pesquisa do Mercado de Testes de Software
+
+ID	Condição	Resultado Esperado	Camada
+1	Verificar a possibilidade de registrar informações da pesquisa apenas por usuários autenticados	O sistema deve permitir o registro somente para usuários autenticados e rejeitar requisições sem autenticação	API
+2	Avaliar o vínculo das informações registradas ao usuário e perfil correspondente	O sistema deve associar cada registro ao usuário e perfil que o criou	API
+3	Confirmar a validação e consistência dos dados obrigatórios da pesquisa	O sistema deve exigir o preenchimento dos campos obrigatórios e validar formatos antes de salvar	API
+4	Analisar o controle de duplicidade de registros para o mesmo usuário e período	O sistema deve impedir múltiplos registros idênticos para o mesmo usuário e período de coleta	API
+5	Verificar a aplicação de anonimização ou pseudonimização dos dados armazenados	O sistema deve garantir que os dados pessoais sejam armazenados de forma anônima ou pseudonimizada	API
+6	Avaliar o comportamento do sistema em operações de atualização e exclusão das informações	O sistema deve permitir que o usuário edite ou exclua apenas os registros criados por ele mesmo	API
+
+JIRA-9172: Listar e Filtrar Informações Registradas
+
+ID	Condição	Resultado Esperado	Camada
+1	Verificar a listagem das informações registradas considerando anonimização e permissões de acesso	O sistema deve listar as informações de forma anonimizada e respeitar as permissões do perfil autenticado	API
+2	Avaliar a funcionalidade de filtragem de dados conforme parâmetros disponíveis	O sistema deve permitir filtrar os registros com base nos parâmetros informados (cargo, nível, região, etc.)	API
+3	Validar o comportamento do sistema na combinação de múltiplos filtros aplicados simultaneamente	O sistema deve retornar resultados consistentes e precisos quando múltiplos filtros são aplicados	API
+4	Confirmar a aplicação de paginação e ordenação nos resultados listados	O sistema deve retornar os resultados paginados e ordenados conforme os parâmetros solicitados	API
+5	Avaliar o controle de acesso e restrição de visualização conforme perfil do usuário	O sistema deve permitir visualização total ou parcial dos dados conforme o nível de permissão do usuário	API

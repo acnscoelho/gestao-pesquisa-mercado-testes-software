@@ -1,0 +1,13 @@
+{
+  "timeout": 10000,
+  "exit": true,
+  "recursive": true,
+  "spec": "test/**/*.test.js",
+  "color": true,
+  "reporter": "spec"
+}
+
+
+
+
+

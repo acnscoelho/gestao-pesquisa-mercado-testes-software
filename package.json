@@ -1,0 +1,32 @@
+{
+  "name": "gestao-pesquisa-mercado-testes-software",
+  "version": "1.0.0",
+  "description": "API Rest para gestão de pesquisa do mercado de testes de software",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "mocha 'test/**/*.test.js' --timeout 10000 --exit",
+    "test:report": "mocha 'test/**/*.test.js' --timeout 10000 --exit --reporter mochawesome --reporter-options reportDir=test-results,reportFilename=test-report,html=true,json=false"
+  },
+  "keywords": ["api", "rest", "testing", "market-research", "software-testing"],
+  "author": "Ana Cláudia Coelho",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "swagger-ui-express": "^5.0.0",
+    "yamljs": "^0.3.0",
+    "express-validator": "^7.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "mocha": "^10.2.0",
+    "chai": "^4.3.10",
+    "supertest": "^6.3.3",
+    "mochawesome": "^7.1.3",
+    "dotenv": "^16.3.1"
+  }
+}
+

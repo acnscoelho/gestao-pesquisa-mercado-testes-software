@@ -1,0 +1,75 @@
+{
+  "validResearchData": [
+    {
+      "cargo": "QA Engineer",
+      "nivelExperiencia": "pleno",
+      "faixaSalarial": "R$ 5.000 - R$ 7.000",
+      "ferramentas": ["Selenium", "Cypress", "JMeter"],
+      "localizacao": "São Paulo - SP",
+      "areaAtuacao": "web"
+    },
+    {
+      "cargo": "QA Analyst",
+      "nivelExperiencia": "junior",
+      "faixaSalarial": "R$ 3.000 - R$ 4.500",
+      "ferramentas": ["Postman", "JMeter"],
+      "localizacao": "Rio de Janeiro - RJ",
+      "areaAtuacao": "api"
+    },
+    {
+      "cargo": "Test Lead",
+      "nivelExperiencia": "senior",
+      "faixaSalarial": "R$ 10.000 - R$ 15.000",
+      "ferramentas": ["Selenium", "Cypress", "TestRail", "Jenkins"],
+      "localizacao": "Belo Horizonte - MG",
+      "areaAtuacao": "web"
+    },
+    {
+      "cargo": "QA Automation Engineer",
+      "nivelExperiencia": "especialista",
+      "faixaSalarial": "R$ 15.000 - R$ 20.000",
+      "ferramentas": ["Selenium", "Appium", "Robot Framework", "K6"],
+      "localizacao": "São Paulo - SP",
+      "areaAtuacao": "mobile"
+    }
+  ],
+  "invalidResearchData": {
+    "missingRequiredFields": {
+      "cargo": "QA Engineer"
+    },
+    "invalidNivelExperiencia": {
+      "cargo": "QA Tester",
+      "nivelExperiencia": "avancado",
+      "localizacao": "Curitiba - PR",
+      "areaAtuacao": "web"
+    }
+  },
+  "updateData": {
+    "cargo": "Senior QA Engineer",
+    "nivelExperiencia": "senior",
+    "faixaSalarial": "R$ 8.000 - R$ 12.000",
+    "ferramentas": ["Selenium", "Cypress", "Playwright", "K6"],
+    "localizacao": "São Paulo - SP",
+    "areaAtuacao": "web"
+  },
+  "filters": {
+    "byCargo": {
+      "cargo": "QA Engineer"
+    },
+    "byNivel": {
+      "nivelExperiencia": "pleno"
+    },
+    "byLocalizacao": {
+      "localizacao": "São Paulo - SP"
+    },
+    "byFerramenta": {
+      "ferramenta": "Selenium"
+    },
+    "multipleFilters": {
+      "cargo": "QA Engineer",
+      "nivelExperiencia": "pleno",
+      "localizacao": "São Paulo - SP"
+    }
+  }
+}
+

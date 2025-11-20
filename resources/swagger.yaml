@@ -1,0 +1,922 @@
+openapi: 3.0.0
+info:
+  title: API de Gestão de Pesquisa do Mercado de Testes de Software
+  description: |
+    API Rest para gerenciar pesquisas sobre o mercado de testes de software no Brasil.
+    
+    ## Autenticação
+    A API utiliza autenticação JWT (JSON Web Token). Para acessar rotas protegidas:
+    1. Registre-se usando POST /api/auth/register
+    2. Faça login usando POST /api/auth/login para obter um token
+    3. Inclua o token no header Authorization: Bearer {token}
+    
+    ## Perfis de Usuário
+    - **estudante**: Estudante da área de TI/QA
+    - **profissional_qa**: Profissional atuante em QA
+    - **gestor**: Gestor de equipe/projetos de QA
+    - **recrutador**: Recrutador técnico
+    - **administrador**: Administrador do sistema
+    
+  version: 1.0.0
+  contact:
+    name: Ana Cláudia Coelho
+servers:
+  - url: http://localhost:3000/api
+    description: Servidor de desenvolvimento
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID único do usuário
+          example: 1
+        name:
+          type: string
+          description: Nome completo do usuário
+          example: João Silva
+        email:
+          type: string
+          format: email
+          description: Email do usuário
+          example: joao@email.com
+        cpf:
+          type: string
+          description: CPF do usuário (apenas números)
+          example: "12345678900"
+        profile:
+          type: string
+          enum: [estudante, profissional_qa, gestor, recrutador, administrador]
+          description: Perfil do usuário
+          example: profissional_qa
+        createdAt:
+          type: string
+          format: date-time
+          description: Data de criação do registro
+        blocked:
+          type: boolean
+          description: Indica se a conta está bloqueada
+          example: false
+          
+    UserRegistration:
+      type: object
+      required:
+        - name
+        - email
+        - cpf
+        - password
+        - profile
+      properties:
+        name:
+          type: string
+          description: Nome completo do usuário
+          example: João Silva
+        email:
+          type: string
+          format: email
+          description: Email único do usuário
+          example: joao@email.com
+        cpf:
+          type: string
+          description: CPF único do usuário (apenas números)
+          example: "12345678900"
+        password:
+          type: string
+          minLength: 8
+          description: Senha com no mínimo 8 caracteres, incluindo maiúsculas, minúsculas e números
+          example: Senha123
+        profile:
+          type: string
+          enum: [estudante, profissional_qa, gestor, recrutador, administrador]
+          description: Perfil do usuário
+          example: profissional_qa
+          
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: joao@email.com
+        password:
+          type: string
+          example: Senha123
+          
+    LoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Login realizado com sucesso
+        token:
+          type: string
+          description: Token JWT para autenticação
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        user:
+          $ref: '#/components/schemas/User'
+          
+    ResearchData:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID único do registro
+          example: 1
+        userProfile:
+          type: string
+          description: Perfil do usuário que criou o registro
+          example: profissional_qa
+        cargo:
+          type: string
+          description: Cargo/função exercida
+          example: QA Engineer
+        nivelExperiencia:
+          type: string
+          enum: [junior, pleno, senior, especialista]
+          description: Nível de experiência
+          example: pleno
+        faixaSalarial:
+          type: string
+          description: Faixa salarial
+          example: R$ 5.000 - R$ 7.000
+        ferramentas:
+          type: array
+          items:
+            type: string
+          description: Lista de ferramentas utilizadas
+          example: ["Selenium", "Cypress", "JMeter"]
+        localizacao:
+          type: string
+          description: Localização (estado ou cidade)
+          example: São Paulo - SP
+        areaAtuacao:
+          type: string
+          description: Área de atuação
+          example: web
+        createdAt:
+          type: string
+          format: date-time
+          description: Data de criação
+        updatedAt:
+          type: string
+          format: date-time
+          description: Data de última atualização
+          
+    ResearchDataCreate:
+      type: object
+      required:
+        - cargo
+        - nivelExperiencia
+        - localizacao
+        - areaAtuacao
+      properties:
+        cargo:
+          type: string
+          example: QA Engineer
+        nivelExperiencia:
+          type: string
+          enum: [junior, pleno, senior, especialista]
+          example: pleno
+        faixaSalarial:
+          type: string
+          example: R$ 5.000 - R$ 7.000
+        ferramentas:
+          type: array
+          items:
+            type: string
+          example: ["Selenium", "Cypress", "JMeter"]
+        localizacao:
+          type: string
+          example: São Paulo - SP
+        areaAtuacao:
+          type: string
+          example: web
+          
+    ResearchDataUpdate:
+      type: object
+      properties:
+        cargo:
+          type: string
+        nivelExperiencia:
+          type: string
+          enum: [junior, pleno, senior, especialista]
+        faixaSalarial:
+          type: string
+        ferramentas:
+          type: array
+          items:
+            type: string
+        localizacao:
+          type: string
+        areaAtuacao:
+          type: string
+          
+    PaginatedResearchData:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Dados recuperados com sucesso
+        filters:
+          type: string
+          example: Nenhum filtro aplicado
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResearchData'
+        pagination:
+          type: object
+          properties:
+            currentPage:
+              type: integer
+              example: 1
+            totalPages:
+              type: integer
+              example: 5
+            totalItems:
+              type: integer
+              example: 48
+            itemsPerPage:
+              type: integer
+              example: 10
+            hasNextPage:
+              type: boolean
+              example: true
+            hasPreviousPage:
+              type: boolean
+              example: false
+              
+    Statistics:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Estatísticas recuperadas com sucesso
+        statistics:
+          type: object
+          properties:
+            totalRegistros:
+              type: integer
+              example: 48
+            porNivel:
+              type: object
+              additionalProperties:
+                type: integer
+              example:
+                junior: 12
+                pleno: 20
+                senior: 14
+                especialista: 2
+            porLocalizacao:
+              type: object
+              additionalProperties:
+                type: integer
+              example:
+                "São Paulo - SP": 25
+                "Rio de Janeiro - RJ": 15
+                "Belo Horizonte - MG": 8
+            porCargo:
+              type: object
+              additionalProperties:
+                type: integer
+              example:
+                "QA Engineer": 30
+                "QA Analyst": 12
+                "Test Lead": 6
+            ferramentasMaisUsadas:
+              type: object
+              additionalProperties:
+                type: integer
+              example:
+                Selenium: 35
+                Cypress: 28
+                JMeter: 20
+                
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Tipo do erro
+          example: Erro ao processar requisição
+        message:
+          type: string
+          description: Mensagem detalhada do erro
+          example: Descrição específica do erro
+          
+    SuccessMessage:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Operação realizada com sucesso
+
+paths:
+  /:
+    get:
+      summary: Informações da API
+      description: Retorna informações básicas sobre a API e seus endpoints
+      tags:
+        - Info
+      responses:
+        '200':
+          description: Informações da API
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  version:
+                    type: string
+                  author:
+                    type: string
+                  endpoints:
+                    type: object
+                    
+  /auth/register:
+    post:
+      summary: Registrar novo usuário
+      description: Cria um novo usuário na plataforma
+      tags:
+        - Autenticação
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+      responses:
+        '201':
+          description: Usuário registrado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Usuário registrado com sucesso
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                emailDuplicado:
+                  value:
+                    error: Erro ao registrar usuário
+                    message: Email já cadastrado
+                cpfDuplicado:
+                  value:
+                    error: Erro ao registrar usuário
+                    message: CPF já cadastrado
+                senhaInvalida:
+                  value:
+                    error: Erro ao registrar usuário
+                    message: A senha deve ter no mínimo 8 caracteres
+                perfilInvalido:
+                  value:
+                    error: Erro ao registrar usuário
+                    message: Perfil inválido. Valores aceitos...
+                    
+  /auth/login:
+    post:
+      summary: Fazer login
+      description: Autentica um usuário e retorna um token JWT
+      tags:
+        - Autenticação
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login realizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Dados incompletos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: Dados incompletos
+                message: Email e senha são obrigatórios
+        '401':
+          description: Credenciais inválidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                credenciaisInvalidas:
+                  value:
+                    error: Erro ao fazer login
+                    message: Credenciais inválidas. 2 tentativa(s) restante(s)
+        '403':
+          description: Conta bloqueada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: Conta bloqueada
+                message: Conta bloqueada após 3 tentativas incorretas. Tente novamente em 15 minutos
+                
+  /auth/validate:
+    get:
+      summary: Validar token JWT
+      description: Verifica se o token JWT é válido
+      tags:
+        - Autenticação
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Token válido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Token válido
+                  user:
+                    type: object
+                    properties:
+                      userId:
+                        type: integer
+                      email:
+                        type: string
+                      profile:
+                        type: string
+        '401':
+          description: Token inválido ou não fornecido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /users/me:
+    get:
+      summary: Obter perfil do usuário autenticado
+      description: Retorna as informações do usuário autenticado
+      tags:
+        - Usuários
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Perfil recuperado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          description: Não autenticado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Usuário não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /users:
+    get:
+      summary: Listar todos os usuários
+      description: Lista todos os usuários cadastrados (apenas administradores)
+      tags:
+        - Usuários
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Usuários recuperados com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  total:
+                    type: integer
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        '401':
+          description: Não autenticado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Acesso negado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: Acesso negado
+                message: Apenas usuários com perfil administrador podem acessar este recurso
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /users/{id}:
+    get:
+      summary: Buscar usuário por ID
+      description: Retorna informações de um usuário específico (apenas administradores)
+      tags:
+        - Usuários
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID do usuário
+      responses:
+        '200':
+          description: Usuário recuperado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          description: Não autenticado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Acesso negado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Usuário não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /research:
+    post:
+      summary: Criar novo registro de pesquisa
+      description: Cria um novo registro de dados de pesquisa do mercado
+      tags:
+        - Pesquisa
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResearchDataCreate'
+      responses:
+        '201':
+          description: Dados de pesquisa registrados com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/ResearchData'
+        '400':
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                camposObrigatorios:
+                  value:
+                    error: Erro ao registrar dados de pesquisa
+                    message: Campos obrigatórios - cargo, nivelExperiencia, localizacao, areaAtuacao
+                registroDuplicado:
+                  value:
+                    error: Erro ao registrar dados de pesquisa
+                    message: Você já possui um registro de pesquisa. Use a função de atualização
+        '401':
+          description: Não autenticado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+    get:
+      summary: Listar e filtrar registros de pesquisa
+      description: Lista registros de pesquisa com filtros opcionais e paginação (dados anonimizados para não-admins)
+      tags:
+        - Pesquisa
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: cargo
+          schema:
+            type: string
+          description: Filtrar por cargo
+        - in: query
+          name: nivelExperiencia
+          schema:
+            type: string
+            enum: [junior, pleno, senior, especialista]
+          description: Filtrar por nível de experiência
+        - in: query
+          name: localizacao
+          schema:
+            type: string
+          description: Filtrar por localização
+        - in: query
+          name: faixaSalarial
+          schema:
+            type: string
+          description: Filtrar por faixa salarial
+        - in: query
+          name: ferramenta
+          schema:
+            type: string
+          description: Filtrar por ferramenta
+        - in: query
+          name: userProfile
+          schema:
+            type: string
+          description: Filtrar por perfil de usuário
+        - in: query
+          name: areaAtuacao
+          schema:
+            type: string
+          description: Filtrar por área de atuação
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Número da página
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          description: Itens por página
+      responses:
+        '200':
+          description: Dados recuperados com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResearchData'
+        '401':
+          description: Não autenticado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /research/me:
+    get:
+      summary: Buscar registros de pesquisa do próprio usuário
+      description: Retorna os registros de pesquisa criados pelo usuário autenticado
+      tags:
+        - Pesquisa
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Dados recuperados com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  total:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResearchData'
+        '401':
+          description: Não autenticado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /research/{id}:
+    put:
+      summary: Atualizar registro de pesquisa
+      description: Atualiza um registro de pesquisa existente (apenas o dono)
+      tags:
+        - Pesquisa
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID do registro de pesquisa
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResearchDataUpdate'
+      responses:
+        '200':
+          description: Dados de pesquisa atualizados com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/ResearchData'
+        '400':
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Não autenticado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Sem permissão
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: Erro ao atualizar dados de pesquisa
+                message: Você não tem permissão para atualizar este registro
+        '404':
+          description: Registro não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: Erro ao atualizar dados de pesquisa
+                message: Registro de pesquisa não encontrado
+                
+    delete:
+      summary: Deletar registro de pesquisa
+      description: Remove um registro de pesquisa (apenas o dono)
+      tags:
+        - Pesquisa
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID do registro de pesquisa
+      responses:
+        '200':
+          description: Registro deletado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+        '401':
+          description: Não autenticado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Sem permissão
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Registro não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /research/stats/all:
+    get:
+      summary: Obter estatísticas agregadas
+      description: Retorna estatísticas consolidadas dos dados de pesquisa (apenas administradores e gestores)
+      tags:
+        - Pesquisa
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Estatísticas recuperadas com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Statistics'
+        '401':
+          description: Não autenticado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Acesso negado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: Acesso negado
+                message: Apenas usuários com perfil administrador ou gestor podem acessar este recurso
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+tags:
+  - name: Info
+    description: Informações gerais da API
+  - name: Autenticação
+    description: Endpoints de autenticação e registro
+  - name: Usuários
+    description: Gerenciamento de usuários
+  - name: Pesquisa
+    description: Gerenciamento de dados de pesquisa do mercado
+
+
+
+
+
