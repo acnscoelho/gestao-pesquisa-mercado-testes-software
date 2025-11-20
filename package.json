@@ -7,7 +7,9 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "test": "mocha 'test/**/*.test.js' --timeout 10000 --exit",
-    "test:report": "mocha 'test/**/*.test.js' --timeout 10000 --exit --reporter mochawesome --reporter-options reportDir=test-results,reportFilename=test-report,html=true,json=false"
+    "test:report": "mocha 'test/**/*.test.js' --timeout 10000 --exit --reporter mochawesome --reporter-options reportDir=test-results,reportFilename=test-report,html=true,json=false",
+    "test:performance": "k6 run test/k6/auth/register-performance.js",
+    "test:performance:report": "k6 run --out json=test-results/performance.json test/k6/auth/register-performance.js"
   },
   "keywords": ["api", "rest", "testing", "market-research", "software-testing"],
   "author": "Ana Cláudia Coelho",
